@@ -26,7 +26,7 @@ class TestsEmployeeServices {
 	@Order(1)
 	void createEmployee1() {
 		
-		Employee minion = new Employee(1,"Kevin","kevin@de.me","Kevpass", false);
+		Employee minion = new Employee(0,"Kevin","kevin@de.me","Kevpass", false);
 		Mockito.when(edao.createEmployee(minion)).thenReturn(minion);
 		eserv.createEmployee(minion);
 		Assertions.assertEquals("Kevin",minion.getName());
@@ -36,8 +36,9 @@ class TestsEmployeeServices {
 	@Test
 	@Order(2)
 	void createManager() {
-		Employee gru = new Employee(2,"Gru","gru@de.me","Grupass", true);
+		Employee gru = new Employee(0,"Gru","gru@de.me","Grupass", true);
 		Mockito.when(edao.createEmployee(gru)).thenReturn(gru);
+		eserv.createEmployee(gru);
 		Assertions.assertEquals("Gru",gru.getName());
 		
 	}
@@ -51,7 +52,8 @@ class TestsEmployeeServices {
 		employees.add(minion);
 		employees.add(gru);
 		Mockito.when(edao.getEmployeeByID(1)).thenReturn(employees.get(0));
-		Assertions.assertEquals(1,employees.get(0).getID());
+		Employee employee = eserv.getEmployeeByID(1);
+		Assertions.assertEquals(1,employee.getID());
 	}
 	
 	@Test
@@ -63,7 +65,8 @@ class TestsEmployeeServices {
 		employees.add(minion);
 		employees.add(gru);
 		Mockito.when(edao.getEmployeeByEmail("kevin@de.me")).thenReturn(employees);
-		Assertions.assertEquals("kevin@de.me",employees.get(0).getEmail());
+		List<Employee> empls = eserv.getEmployeeByEmail("kevin@de.me");
+		Assertions.assertEquals("kevin@de.me",empls.get(0).getEmail());
 	}
 	
 	@Test
@@ -75,7 +78,8 @@ class TestsEmployeeServices {
 		employees.add(minion);
 		employees.add(gru);
 		Mockito.when(edao.getAllEmployee()).thenReturn(employees);
-		Assertions.assertEquals(2,employees.size());
+		List<Employee> empls = eserv.getAllEmployee();
+		Assertions.assertEquals(2,empls.size());
 	}
 	
 	
@@ -87,8 +91,9 @@ class TestsEmployeeServices {
 		List<Employee> employees = new ArrayList<Employee>();
 		employees.add(minion);
 		employees.add(gru);
-		Mockito.when(edao.getEmployeeByEmail("Gru")).thenReturn(employees);
-		Assertions.assertEquals("Gru",employees.get(1).getName());
+		Mockito.when(edao.getEmployeeByName("Gru")).thenReturn(employees);
+		List<Employee> empls = eserv.getEmployeeByName("Gru");
+		Assertions.assertEquals("Gru",empls.get(0).getName());
 	}
 	
 	
@@ -98,15 +103,17 @@ class TestsEmployeeServices {
 		Employee minion = new Employee(1,"Kevin","kevin@de.me","Kevpass", false);
 		Mockito.when(edao.updateEmployee(minion)).thenReturn(minion);
 		minion.setName("Sturad");
+		eserv.updateEmployee(minion);
 		Assertions.assertEquals("Sturad",minion.getName());
 	}
 	
 	@Test
-	@Order(20)
+	@Order(21)
 	void updateEmployee2() {
 		Employee minion = new Employee(1,"Kevin","kevin@de.me","Kevpass", false);
 		Mockito.when(edao.updateEmployee(minion)).thenReturn(minion);
 		minion.setEmail("sturad@de.me");
+		eserv.updateEmployee(minion);
 		Assertions.assertEquals("sturad@de.me",minion.getEmail());		
 	}
 	

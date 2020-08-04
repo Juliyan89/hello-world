@@ -15,6 +15,7 @@
         <property name="hibernate.show_sql">true</property>
         
        <mapping class = "dev.com.entities.Employee"></mapping>
+       <mapping class = "dev.com.entities.Expense"></mapping>
 
     </session-factory>
 </hibernate-configuration>

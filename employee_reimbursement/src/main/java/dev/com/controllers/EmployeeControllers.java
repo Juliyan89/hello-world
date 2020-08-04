@@ -11,8 +11,7 @@ public class EmployeeControllers {
 
 	public static EmployeeServices eserv = new EmployeeServicesImpl();
 	private static Gson gson = new Gson();
-	
-	
+
 	public static Handler createEmployee = (ctx) -> {
 		String employeeJSON = ctx.body();
 		Employee employee = gson.fromJson(employeeJSON, Employee.class);
@@ -31,9 +30,7 @@ public class EmployeeControllers {
 			ctx.status(201);
 		}
 	};
-		
-	
-	
+
 	public static Handler getEmployeeById = (ctx) -> {
 		String id = ctx.pathParam("ID");
 		Employee employee = eserv.getEmployeeByID(Integer.parseInt(id));
@@ -46,72 +43,66 @@ public class EmployeeControllers {
 			ctx.result(json);
 		}
 	};
-	
+
 	public static Handler getAllEmployees = (ctx) -> {
 		List<Employee> employees = eserv.getAllEmployee();
 		String json = gson.toJson(employees);
 		// String userQ = ctx.queryParam("email");
-		if(ctx.queryString() != null) {
-			
-		if (ctx.queryString().contains("email")) {
-			String userQ = ctx.queryParam("email");
-			List<Employee> employeesByEmail = eserv.getEmployeeByEmail(userQ);
-			ctx.result(gson.toJson(employeesByEmail));
+		if (ctx.queryString() != null) {
 
-		} else if (ctx.queryString().contains("name")) {
-			String userQ = ctx.queryParam("name");
-			List<Employee> employeesByName = eserv.getEmployeeByName(userQ);
-			ctx.result(gson.toJson(employeesByName));
+			if (ctx.queryString().contains("email")) {
+				String userQ = ctx.queryParam("email");
+				List<Employee> employeesByEmail = eserv.getEmployeeByEmail(userQ);
+				ctx.result(gson.toJson(employeesByEmail));
 
-		} else if (ctx.queryString().contains("isManager")) {
-			String userQ = ctx.queryParam("isManager");
+			} else if (ctx.queryString().contains("name")) {
+				String userQ = ctx.queryParam("name");
+				List<Employee> employeesByName = eserv.getEmployeeByName(userQ);
+				ctx.result(gson.toJson(employeesByName));
 
-			if (userQ.equals("true")) {
-				List<Employee> managers = eserv.getAllManager();
-				ctx.result(gson.toJson(managers));
+			} else if (ctx.queryString().contains("isManager")) {
+				String userQ = ctx.queryParam("isManager");
+
+				if (userQ.equals("true")) {
+					List<Employee> managers = eserv.getAllManager();
+					ctx.result(gson.toJson(managers));
+				}
+
+				else {
+					List<Employee> NotManagers = eserv.getAllNotManager();
+					ctx.result(gson.toJson(NotManagers));
+				}
 			}
-
-			else {
-				List<Employee> NotManagers = eserv.getAllNotManager();
-				ctx.result(gson.toJson(NotManagers));
-			}
-		}
-		}
-		else {
+		} else {
 			ctx.result(json);
 		}
 	};
-	
 
-	
-
-
-	public static Handler updateEmployee = (ctx)->{
+	public static Handler updateEmployee = (ctx) -> {
 		String employeeJSON = ctx.body();
 		Employee employee = gson.fromJson(employeeJSON, Employee.class);
-		
-		if(eserv.getEmployeeByID(employee.getID())==null) {
+
+		if (eserv.getEmployeeByID(employee.getID()) == null) {
 			ctx.status(404);
 			ctx.result("There is no Employee with this ID");
 		} else {
 			eserv.updateEmployee(employee);
-			ctx.result(gson.toJson(employee));}
+			ctx.result(gson.toJson(employee));
+		}
 	};
-	
-	
-	public static Handler deleteEmployeeByID = (ctx) ->{
+
+	public static Handler deleteEmployeeByID = (ctx) -> {
 		String id = ctx.pathParam("ID");
 		Employee employee = eserv.getEmployeeByID(Integer.parseInt(id));
-		
-		if(employee == null) {
+
+		if (employee == null) {
 			ctx.status(404);
 			ctx.result("There is no Employee with this ID");
 		} else {
 			eserv.deleteEmployeeByID(employee.getID());
-			ctx.result(gson.toJson(employee));} 
-		
-	};
-		
+			ctx.result(gson.toJson(employee));
+		}
 
-	
+	};
+
 }
