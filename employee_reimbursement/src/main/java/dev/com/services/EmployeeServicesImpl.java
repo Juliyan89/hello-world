@@ -4,13 +4,16 @@ import java.util.List;
 
 import dev.com.dao.EmployeeDAO;
 import dev.com.dao.EmployeeDAOImpl;
+import dev.com.dto.LoginDTO;
 import dev.com.entities.Employee;
 
 public class EmployeeServicesImpl implements EmployeeServices{
 	
+
 	//private static EmployeeDAO edao = EmployeeDAOImpl.getEmployeeDAOImpl();
 	
 	private EmployeeDAO edao;
+	
 	
 	
 	public EmployeeServicesImpl() {
@@ -71,6 +74,7 @@ public class EmployeeServicesImpl implements EmployeeServices{
 	public boolean deleteEmployeeByEmail(String email) {
 		return edao.deleteEmployeeByEmail(email);
 	}
+	
 
 
 

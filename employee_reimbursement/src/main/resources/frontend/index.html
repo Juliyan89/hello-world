@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reimbersment</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    
+
+    <h1 class="toast-header">Reimbersment</h1>
+     
+
+    <button onclick="getAllExpenses()" id="button">Get All Expenses</button>
+
+    <button onclick="getCurrentUser()" id="button">Get Current User</button>
+
+    <button onclick="loginUser()" id="button">Login User</button>
+
+    <button onclick="creteCookie()" id="button">Create cookie</button>
+
+    <button onclick="getcookie()" id="button">get cookie</button>
+
+    <button onclick="getEmployeeByID()" id="button">getEmployeeByID</button>
+
+    <button onclick="managerView()" id="button">managerView</button>
+
+    <button onclick="createNewExpense()" id="button">createNewExpense</button>
+
+    <button onclick="createNewExpense()" id="button">createNewExpense</button>
+
+
+    </div>
+
+    <div class="container-fluid" id="result">
+       
+        <p id="text"></p>
+
+        
+    </div>
+    
+</body>
+
+
+<script>
+
+
+async function createNewExpense(){
+
+    let prom = prompt("You are going to create new expense");
+    
+
+
+
+}
+
+
+async function updatefunction(expID,id){
+
+  let msg = alert("You are going to change expense status!");
+
+  let txt;
+        if (confirm("Do you approve this expense?")) {
+            const httpResponse = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`);
+            const expensesByID = await httpResponse.json();
+            console.log(expensesByID);
+
+            expensesByID.status = "approved";
+            console.log(expensesByID);
+
+            let request = {
+                method: 'PUT',
+                //credentials: 'include',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(expensesByID)
+                };
+
+            const httpupdate = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`, request);
+
+
+        } else {
+
+            const httpResponse = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`);
+            const expensesByID = await httpResponse.json();
+            console.log(expensesByID);
+
+            expensesByID.status = "denied";
+            console.log(expensesByID);
+
+            let request = {
+                method: 'PUT',
+                //credentials: 'include',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(expensesByID)
+                };
+
+            const httpupdate = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`, request);
+
+        }
+
+}
+
+
+
+           /* updatefunction(msg, myYes, myNo)
+           
+           var confirmBox = $("#confirm");
+            confirmBox.find(".message").text("msg");
+            confirmBox.find(".yes,.no").unbind().click(function() {
+               confirmBox.hide();
+            });
+            confirmBox.find(".yes").click(myYes);
+            confirmBox.find(".no").click(myNo);
+
+            confirmBox.show();*/
+
+
+async function managerView(){
+        
+        let id = 3;
+
+        const httpResponse = await fetch(`http://localhost:7000/employees/${id}/expenses`);
+        const expensesByEmpl = await httpResponse.json();
+
+       
+        let col = [];
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+            for (let key in expensesByEmpl[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+        col.push("Change Status");
+
+        console.log(col);
+        // Create a table.
+        let table = document.createElement("table");
+
+        // Create table header row using the extracted headers above.
+        let tr = table.insertRow(-1);                   // table row.
+
+        for (let i = 0; i < col.length; i++) {
+            let th = document.createElement("th");      // table header.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // add json data to the table as rows.
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+
+            tr = table.insertRow(-1);
+         
+
+            let expID = expensesByEmpl[i][col[0]];
+
+
+           
+            console.log(expID);
+
+            for (let j = 0; j < col.length-1; j++) {
+                let tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = expensesByEmpl[i][col[j]];
+            }
+
+            let tabCell = tr.insertCell(-1);
+            let update = "Change Status";
+
+            tabCell.addEventListener("click", function(){
+            this.style.color = "red";
+            alert(
+                updatefunction(expID,id)
+            )
+            });
+
+     
+
+            tabCell.innerHTML = update;
+
+            
+           /* let tabCell = tr.insertCell(-1);
+
+            let div = document.createElement("DIV");
+            div.id = "Update";
+            //document.tabCell.appendChild(div);
+             
+
+             document.getElementById("Update").appendChild("String");
+            /* let x = document.createElement("SELECT");
+                x.setAttribute("id", "mySelect");
+                document.getElementById("Update").appendChild(x);
+
+                var z = document.createElement("option");
+                z.setAttribute("value", "approve");
+                var t = document.createTextNode("approve");
+                z.appendChild(t);
+                document.getElementById("mySelect").appendChild(z);*/
+
+            console.log(tr);
+        }
+
+        // Now, add the newly created table with json data, to a container.
+        let divShowData = document.getElementById('result');
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+    
+
+    }    
+
+
+async function getEmployeeByID(){
+        
+        let id = 1;
+
+        const httpResponse = await fetch(`http://localhost:7000/employees/${id}/expenses`);
+        const expensesByEmpl = await httpResponse.json();
+
+        /*for (let x =0; x<expensesByEmpl; x++){
+            
+        }
+
+        console.log(expensesArr);
+
+        console.log(expensesByEmpl);
+
+        
+
+        table = "<table>";
+
+        for (let i=0;i<expensesArr.length; i++){
+            table += "<tr>";
+            table += "<td>" + expensesArr.expDate[i] + "</td>";
+            table += "<td>" + expensesArr.expType[i] + "</td>";
+            table += "<td>" + expensesArr.description[i] + "</td>";
+            table += "<td>" + expensesArr.amount[i] + "</td>";
+            table += "<td>" + expensesArr.status[i] + "</td>";
+            table += "<tr>";
+        }
+
+        document.getElementById("text").innerHTML = table;*/
+
+
+         // Extract value from table header. 
+        // ('Book ID', 'Book Name', 'Category' and 'Price')
+        let col = [];
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+            for (let key in expensesByEmpl[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // Create a table.
+        let table = document.createElement("table");
+
+        // Create table header row using the extracted headers above.
+        let tr = table.insertRow(-1);                   // table row.
+
+        for (let i = 0; i < col.length; i++) {
+            let th = document.createElement("th");      // table header.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // add json data to the table as rows.
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (let j = 0; j < col.length; j++) {
+                let tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = expensesByEmpl[i][col[j]];
+            }
+        }
+
+        // Now, add the newly created table with json data, to a container.
+        let divShowData = document.getElementById('result');
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+    
+    }
+
+
+
+    async function creteCookie(){
+        
+        document.cookie = {name: "kevin@de.me", password:"Kevpass"};
+                
+    }
+    
+    async function getAllExpenses(){
+        
+        const httpResponse = await fetch(`http://localhost:7000/expenses`);
+        console.log(httpResponse);
+        const getAllexpenses = await httpResponse.json();
+        console.log(getAllexpenses);
+
+        document.getElementById("text").innerHTML = getAllexpenses;
+                
+    }
+
+    async function getCurrentUser(){
+        
+        const httpResponse = await fetch(`http://localhost:7000/userinfo`);
+        console.log(httpResponse);
+        const getAllexpenses = await httpResponse.json();
+        console.log(getAllexpenses);
+
+        document.getElementById("text").innerHTML = getAllexpenses;
+                
+    }
+
+    async function getcookie(){
+        
+        let cook = document.cookie;
+        document.getElementById("text").innerHTML = cook.name;
+                
+    }
+
+    async function loginUser(){
+        let config = {
+            email: 'kevin@de.me',
+            password: 'Kevpass'
+        };
+
+        let request = {
+          method: 'POST',
+          credentials: 'include',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(config)
+        };
+        
+        const httpResponse = await fetch('http://localhost:7000/login',request);
+  
+        //const login = await httpResponse.json();
+
+        //console.log(login);
+        //document.cookie = `ID=${login.ID}`;
+
+       let request1 = {
+          method: 'GET',
+          credentials: 'include',
+          headers: {'Content-Type':'application/json'},
+        };
+
+       const getUser = await fetch(`http://localhost:7000/userinfo`,request1);
+        const loguser = await getUser.json();
+        //document.cookie = `ID=${loguser.ID}`;
+      //  console.log(loguser.ID);
+      
+        document.getElementById("text").innerHTML = JSON.stringify(loguser);
+                
+    }
+    // let id = document.cookie;
+    // employee fetch(`http://localhost:7000/employees/${id}) */
+
+
+</script>
+
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="loginCSS.css">
+    <link rel="stylesheet" type="text/css" href="createExpenseForm.css">
+    <script src="CreateExpense.js"></script>
+</head>
+<body>
+    
+
+    <button onclick="showHideLogin()">Login</button>
+
+    <div id="id01" class="modal">
+    
+    <div class="modal-content animate">
+        <div class="imgcontainer">
+            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+            <img src="avatar.jpg" alt="Avatar" class="avatar">
+          </div>
+          <div class="container">
+        <label for="fname">email:</label><br>
+        <input type="text" id="uemail" name="email" value="kevin@de.me" required><br>
+        <label for="lname">password:</label><br>
+        <input type="password" id="pass" name="psw" value="Kevpass" required><br><br>
+          
+    </div>
+    <div class="container" style="background-color:#f1f1f1">
+        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+        <span class="psw">Forgot <a href="#">password?</a></span>
+      
+    
+      <button onclick="loginUser()" id="logButton">Login User</button>
+    </div> 
+    </div>
+      </div>    
+      
+
+      <div id="employeeDiv">
+          <p id="emplPara">
+              EMPLOYEE REIMBERSMENT PAGE
+              <p id="secretindetifier"></p>
+          </p>
+          <div id="resultEmpl"></div>
+
+          <button class="open-button" onclick="openForm()">Create Expense</button>
+
+          <div class="form-popup" id="myForm">
+            <form class="form-container">
+                <h2>Create Expense</h2>
+          
+              <label for="email"><b>Date</b></label>
+              <input type="text" placeholder="Enter Date" id="expDate" required>
+          
+              <label for="psw"><b>Type</b></label>
+              <input type="text" placeholder="Enter Type of the expense" id="expType" required>
+          
+              <label for="email"><b>Description</b></label>
+              <input type="text" placeholder="Enter Description" id="description" required>
+          
+              <label for="psw"><b>Amount</b></label>
+              <input type="text" placeholder="Enter Amount" id="amount" required>
+          
+          
+            </form>
+          
+            <button class="btn" onclick="createExpense()">Create</button>
+          
+            <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+          
+          </div>
+      </div>
+
+      <div id="managerDiv">
+        <p id="managDiv">
+            MANAGER REIMBERSMENT PAGE
+            <p id="secretindetifier"></p>
+        </p>
+        <div id="resultManager"></div>
+        <button class="open-button" onclick="openForm()">Create Expense</button>
+
+        <div class="form-popup" id="myForm">
+          <form class="form-container">
+            <h2>Create Expense</h2>
+            <label for="email"><b>Date</b></label>
+            <input type="text" placeholder="Enter Date" id="expDate" required>
+        
+            <label for="psw"><b>Type</b></label>
+            <input type="text" placeholder="Enter Type of the expense" id="expType" required>
+        
+            <label for="email"><b>Description</b></label>
+            <input type="text" placeholder="Enter Description" id="description" required>
+        
+            <label for="psw"><b>Amount</b></label>
+            <input type="text" placeholder="Enter Amount" id="amount" required>
+        
+        
+          </form>
+        
+          <button class="btn" onclick="showMeValues()">Create</button>
+        
+          <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        
+        </div>
+    </div>
+
+   
+
+    <style>
+
+        #employeeDiv{
+            display: none;
+        }
+        #managerDiv{
+            display: none;
+        }
+        #id01{
+            display: none;
+        }
+        #secretindetifier{
+            display: none;
+        }
+
+    </style>
+
+
+      <script>
+          
+          
+        function showHideLogin(){
+
+         let modal = document.getElementById('id01');
+
+         if (modal.style.display === "none") {
+            modal.style.display = "block";
+        } else {
+            modal.style.display = "none";
+        }
+
+        }
+
+
+        async function loginUser(){
+
+            let uemail = document.getElementById("uemail").value;
+            let upassword = document.getElementById("pass").value;
+
+            let config = {
+            email: uemail,
+            password: upassword
+        };
+
+        let request = {
+          method: 'POST',
+          credentials: 'include',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(config)
+        };
+        
+        const httpResponse = await fetch('http://localhost:7000/login',request);
+  
+       let request1 = {
+          method: 'GET',
+          credentials: 'include',
+          headers: {'Content-Type':'application/json'},
+        };
+
+       const getUser = await fetch(`http://localhost:7000/userinfo`,request1);
+        const loguser = await getUser.json();
+   
+        if(loguser.isManager){
+        document.getElementById("managerDiv").style.display = 'inline';
+        managerView();
+        document.getElementById("secretindetifier").innerHTML = loguser.ID;
+        }
+
+        else{
+        document.getElementById("employeeDiv").style.display = 'inline';
+        getExpensesByEmplID(loguser.ID); 
+        document.getElementById("secretindetifier").innerHTML = loguser.ID; 
+    }
+        }
+
+    async function getExpensesByEmplID(ID){
+
+        const httpResponse = await fetch(`http://localhost:7000/employees/${ID}/expenses`);
+        const expensesByEmpl = await httpResponse.json();
+
+        let col = [];
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+            for (let key in expensesByEmpl[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // Create a table.
+        let table = document.createElement("table");
+
+        // Create table header row using the extracted headers above.
+        let tr = table.insertRow(-1);                   // table row.
+
+        for (let i = 0; i < col.length; i++) {
+            let th = document.createElement("th");      // table header.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // add json data to the table as rows.
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (let j = 0; j < col.length; j++) {
+                let tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = expensesByEmpl[i][col[j]];
+            }
+        }
+
+        // Now, add the newly created table with json data, to a container.
+        let divShowData = document.getElementById('resultEmpl');
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+    
+    }
+
+
+    async function managerView(){
+
+        const httpResponse = await fetch(`http://localhost:7000/expenses`);
+        const expensesByEmpl = await httpResponse.json();
+
+      let col = [];
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+            for (let key in expensesByEmpl[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+        col.push("Change Status");
+
+        // Create a table.
+        let table = document.createElement("table");
+
+        // Create table header row using the extracted headers above.
+        let tr = table.insertRow(-1);                   // table row.
+
+        for (let i = 0; i < col.length; i++) {
+            let th = document.createElement("th");      // table header.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // add json data to the table as rows.
+        for (let i = 0; i < expensesByEmpl.length; i++) {
+
+            tr = table.insertRow(-1);
+            let expID = expensesByEmpl[i][col[0]];
+        
+            for (let j = 0; j < col.length-1; j++) {
+                let tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = expensesByEmpl[i][col[j]];
+            }
+
+            let tabCell = tr.insertCell(-1);
+            let update = "Change Status";
+
+            tabCell.addEventListener("click", function(){
+            this.style.color = "red";
+            alert(
+                updatefunction(expensesByEmpl[i][col[0]],expensesByEmpl[i][col[5]])
+            )
+            });
+
+            tabCell.innerHTML = update;
+
+        }
+
+        // Now, add the newly created table with json data, to a container.
+        let divShowData = document.getElementById('resultManager');
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+
+    }    
+
+
+async function updatefunction(expID,id){
+
+    let msg = alert("You are going to change expense status!");
+
+      if (confirm("Do you approve this expense?")) {
+          const httpResponse = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`);
+          const expensesByID = await httpResponse.json();
+
+          expensesByID.status = "approved";
+
+          let request = {
+              method: 'PUT',
+              //credentials: 'include',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify(expensesByID)
+              };
+
+          const httpupdate = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`, request);
+          managerView();
+
+      } else {
+
+          const httpResponse = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`);
+          const expensesByID = await httpResponse.json();
+
+          expensesByID.status = "denied ";
+          let reason = prompt("Reason");
+          expensesByID.status += `/reason:"${reason}"`;
+
+          let request = {
+              method: 'PUT',
+              //credentials: 'include',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify(expensesByID)
+              };
+
+          const httpupdate = await fetch(`http://localhost:7000/employees/${id}/expenses/${expID}`, request);
+          managerView();
+      }
+
+}
+
+
+      </script>
+
+</body>
+</html>

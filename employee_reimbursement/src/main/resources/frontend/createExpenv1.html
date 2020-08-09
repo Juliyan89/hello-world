@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="form-popup" id="myForm">
+        <form class="form-container">
+          <h1>Login</h1>
+      
+          <label for="email"><b>Date</b></label>
+          <input type="text" placeholder="Enter Date" id="expDate" required>
+      
+          <label for="psw"><b>Type</b></label>
+          <input type="text" placeholder="Enter Type of the expense" id="expType" required>
+      
+          <label for="email"><b>Description</b></label>
+          <input type="text" placeholder="Enter Description" id="description" required>
+      
+          <label for="psw"><b>Amount</b></label>
+          <input type="text" placeholder="Enter Amount" id="amount" required>
+      
+          
+      
+          <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+      
+      
+        </form>
+        <button onclick="showMeValues(1)">Create</button>
+      </div>
+    
+<script>
+      function showMeValues(ID){
+
+        let uexpDate = document.getElementById("expDate").value;
+        let uexpType = document.getElementById("expType").value;
+        let udescription = document.getElementById("description").value;
+        let uamount = document.getElementById("amount").value;
+         
+        console.log(uexpDate);
+        console.log(uexpType);
+        console.log(udescription);
+        console.log(uamount);
+      
+        let config = {
+                    expID: 0,
+                    expDate: uexpDate,
+                    expType: uexpType,
+                    description: udescription,
+                    amount: uamount,
+                    emplID: ID,
+                    status: "submit"
+              };
+      
+              console.log(config);
+      
+      
+      }
+</script>
+</body>
+</html>

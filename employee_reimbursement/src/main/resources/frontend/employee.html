@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Employee</title>
+    </head>
+<body>
+
+
+
+
+    
+<h2>Employee Reimbersments</h2>
+<div >
+    <button onclick="getUser()" id="button">getUser</button>
+    <p id="text"></p>
+</div>
+
+
+</body>
+
+<script>
+
+async function getUser(){
+
+let request1 = {
+          method: 'GET',
+          credentials: 'include',
+          headers: {'Content-Type':'application/json'},
+        };
+
+       const getUser = await fetch(`http://localhost:7000/userinfo`,request1);
+        const loguser = await getUser.json();
+      
+        document.getElementById("text").innerHTML = loguser;
+       
+}
+</script>
+
+</html>

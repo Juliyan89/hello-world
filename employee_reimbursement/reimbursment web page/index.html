@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reimbersment</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    
+
+    <h1 class="toast-header">Reimbersment</h1>
+     
+
+    <button onclick="getAllExpenses()" id="button">Get All Expenses</button>
+    </div>
+
+    <div class="container-fluid">
+       
+        <p id="text"></p>
+        
+    </div>
+    
+</body>
+
+
+<script>
+
+    
+    async function getAllExpenses(){
+        
+        const httpResponse = await fetch(`localhost:7000/expenses`);
+     
+        const getAllexpenses = await httpResponse.json();
+  
+
+        document.getElementById("text").innerHTML = getAllexpenses;
+                
+    }
+
+
+</script>
+
+</html>

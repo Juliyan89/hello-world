@@ -95,7 +95,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
 	@Override
 	public List<Expense> getAllExpenses() {
 		try(Session sess = sf.openSession()){
-		Criteria crit = sess.createCriteria(Employee.class);
+		Criteria crit = sess.createCriteria(Expense.class);
 		List<Expense> expenses = crit.list();
 		return expenses;
 		}

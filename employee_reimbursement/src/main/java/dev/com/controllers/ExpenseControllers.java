@@ -32,11 +32,11 @@ public class ExpenseControllers {
 		String expID = ctx.pathParam("expID");
 		String emplID = ctx.pathParam("ID");
 		
-		Expense expenses = expserv.getExpenseByID(Integer.parseInt(expID));
+		Expense expense = expserv.getExpenseByID(Integer.parseInt(expID));
 		Employee employee = emplserv.getEmployeeByID(Integer.parseInt(emplID));
 		
-		if(employee.getID() == expenses.getEmplID()) {
-			String json = gson.toJson(expenses);
+		if(employee.getID() == expense.getEmplID()) {
+			String json = gson.toJson(expense);
 			ctx.result(json);
 		}else { ctx.status(404);
 			    ctx.result("There is no expense with this ID for this employee");}
@@ -104,9 +104,9 @@ public class ExpenseControllers {
 
 		if (expense == null) {
 			ctx.status(404);
-			ctx.result("There is no Employee with this ID");
+			ctx.result("There is no expense with this ID");
 		} else {
-			expserv.deleteExpenseByID(expense.getEmplID());
+			expserv.deleteExpenseByID(expense.getExpID());
 			ctx.result(gson.toJson(expense));
 		}
 
